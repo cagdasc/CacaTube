@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QByteArray>
+#include <QThread>
 #include <quvi/quvi.h>
 #include <quvi/llst.h>
 #include <quvi/net.h>
@@ -22,17 +23,24 @@ public:
     AudioPlayer(QString raw_url);
     ~AudioPlayer();
 
-    void play();
     void pause();
+
     void release();
 
     void setRawURL(QString raw_url);
     void setIsPlaying(bool is_playing);
     void setIsPaused(bool is_paused);
 
+    bool isPlaying();
+    float getCurrentPosition();
+
+    double getDuration();
+
 private:
     bool is_playing;
     bool is_paused;
+
+    double duration;
 
     QString raw_url;
     VlcInstance *_instance;
@@ -42,8 +50,12 @@ private:
     QString getEmbeddedMediaURL();
 
 signals:
+    void is_pplaying();
+    void is_pstop();
 
 public slots:
+    void play();
+    void stop();
 };
 
 #endif // AUDIOPLAYER_H

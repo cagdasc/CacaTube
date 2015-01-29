@@ -16,8 +16,8 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     youtubeprocess.cpp \
-    videoinfo.cpp \
-    audioplayer.cpp
+    audioplayer.cpp \
+    videoinfo.cpp
 
 HEADERS  += mainwindow.h \
     youtubeprocess.h \
