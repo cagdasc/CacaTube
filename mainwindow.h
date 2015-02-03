@@ -7,6 +7,9 @@
 #include <iostream>
 #include <QStringList>
 #include <QStringListModel>
+#include <QLinkedList>
+#include <QEventLoop>
+#include <QMediaPlayer>
 
 #include <videoinfo.h>
 #include "audioplayer.h"
@@ -36,6 +39,9 @@ private slots:
 
     void update_time_line();
 
+    void on_next_button_clicked();
+    void on_prev_button_clicked();
+
 signals:
     void stop_button_clicked();
     void pause_button_clicked();
@@ -46,11 +52,16 @@ private:
     AudioPlayer *audio_player;
     QStringListModel *model;
     VideoInfo video_info;
+    QLinkedList<QString> *token_chain;
 
     int selected_index;
     int prev_index;
-
     int list_size;
+
+    int pageNumber;
+    int result_sum;
+    int start;
+    int end;
 
     QThread *thread;
 

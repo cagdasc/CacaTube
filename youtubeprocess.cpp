@@ -4,6 +4,10 @@ int YoutubeProcess::max_result = 10;
 QString YoutubeProcess::youtube_link = "https://www.youtube.com/watch?v=";
 QString YoutubeProcess::youtube_api_url  = "https://www.googleapis.com/youtube/v3";
 
+int YoutubeProcess::total_results;
+QString YoutubeProcess::next_page_token;
+QString YoutubeProcess::prev_page_token;
+
 YoutubeProcess::YoutubeProcess(QObject *parent) : QObject(parent)
 {
 
@@ -27,20 +31,26 @@ void YoutubeProcess::setVideo_Id(QString video_id) {
     this->video_id = video_id;
 }
 
-void YoutubeProcess::setNextPageToken(QString next_page_token) {
+/*void YoutubeProcess::setNextPageToken(QString next_page_token) {
     this->next_page_token = next_page_token;
 }
+
+void YoutubeProcess::setPrevPageToken(QString prev_page_token) {
+    this->prev_page_token = prev_page_token;
+}*/
 
 QNetworkReply *YoutubeProcess::executeSearch() {
 
     QUrlQuery query;
     QString max;
+
     max.setNum(max_result);
+
     query.addQueryItem("part", "id,snippet");
     query.addQueryItem("q", this->query);
     query.addQueryItem("maxResults", max);
     query.addQueryItem("key", api_key);
-    query.addQueryItem("pageToken", next_page_token);
+    //query.addQueryItem("pageToken", next_page_token);
 
     QUrl url(this->youtube_api_url + "/search");
     url.setQuery(query.query());
@@ -48,6 +58,26 @@ QNetworkReply *YoutubeProcess::executeSearch() {
 
     return access_manager->get(request);
 
+}
+
+QNetworkReply *YoutubeProcess::executeSearch(QString pageToken) {
+
+    QUrlQuery query;
+    QString max;
+
+    max.setNum(max_result);
+
+    query.addQueryItem("part", "id,snippet");
+    query.addQueryItem("q", this->query);
+    query.addQueryItem("maxResults", max);
+    query.addQueryItem("key", api_key);
+    query.addQueryItem("pageToken", pageToken);
+
+    QUrl url(this->youtube_api_url + "/search");
+    url.setQuery(query.query());
+    QNetworkRequest request(url);
+
+    return access_manager->get(request);
 }
 
 QNetworkAccessManager *YoutubeProcess::getAccessManager() {
@@ -73,6 +103,17 @@ void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
     QJsonDocument json_string = QJsonDocument::fromJson(json.toUtf8());
 
     QJsonObject json_object = json_string.object();
+
+    total_results = json_object["pageInfo"].toObject()["totalResults"].toInt();
+    //max_result = json_object["pageInfo"].toObject()["resultsPerPage"].toInt();
+    next_page_token = json_object["nextPageToken"].toString();
+    prev_page_token = json_object["prevPageToken"].toString();
+
+    std::cout << "Total Results: " << total_results << std::endl;
+    std::cout << "Result Per Page: " << max_result << std::endl;
+    std::cout << "Next Page Token: " << next_page_token.toStdString() << std::endl;
+    std::cout << "Prev Page Token: " << prev_page_token.toStdString() << std::endl;
+
     QJsonArray json_array = json_object["items"].toArray();
 
 

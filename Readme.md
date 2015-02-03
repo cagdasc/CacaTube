@@ -1,6 +1,6 @@
 CacaTube
 ===============
-CacaTube is only audio player. It use Youtube API and stream video with libvlc and find embedded link with libquvi.
+CacaTube is only audio player. It use Youtube API and stream video with [libvlc](https://github.com/videolan/vlc), [vlc-qt](https://github.com/ntadej/vlc-qt) and find embedded link with [libquvi](http://quvi.sourceforge.net/).
 
 #License
 

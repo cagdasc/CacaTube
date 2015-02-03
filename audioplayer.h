@@ -2,9 +2,18 @@
 #define AUDIOPLAYER_H
 
 #include <QObject>
+#include <QEventLoop>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QUrlQuery>
 #include <QString>
 #include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QThread>
+#include <QMediaPlayer>
 #include <quvi/quvi.h>
 #include <quvi/llst.h>
 #include <quvi/net.h>
@@ -14,6 +23,9 @@
 #include <vlc-qt/MediaPlayer.h>
 #include "vlc/libvlc.h"
 #include "string.h"
+#include "cacatube_const.h"
+
+#define VLC 1
 
 class AudioPlayer : public QObject
 {
@@ -24,7 +36,6 @@ public:
     ~AudioPlayer();
 
     void pause();
-
     void release();
 
     void setRawURL(QString raw_url);
@@ -35,11 +46,11 @@ public:
     float getCurrentPosition();
 
     double getDuration();
+    VlcMediaPlayer *getMediaPlayer();
 
 private:
     bool is_playing;
     bool is_paused;
-
     double duration;
 
     QString raw_url;
@@ -47,7 +58,10 @@ private:
     VlcMediaPlayer *_player;
     VlcMedia *_media;
 
+    QMediaPlayer *player;
+
     QString getEmbeddedMediaURL();
+    QString getEmbeddedMediaURLWithAPI();
 
 signals:
     void is_pplaying();
@@ -56,6 +70,9 @@ signals:
 public slots:
     void play();
     void stop();
+
+    void started();
+    void ended();
 };
 
 #endif // AUDIOPLAYER_H

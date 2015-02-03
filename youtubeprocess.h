@@ -15,6 +15,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QList>
+#include <QLinkedList>
 
 #include "videoinfo.h"
 #include "cacatube_const.h"
@@ -29,21 +30,26 @@ public:
 
     void setQ(QString query);
     void setVideo_Id(QString video_id);
-    void setNextPageToken(QString next_page_token);
+    //void setNextPageToken(QString next_page_token);
+    //void setPrevPageToken(QString prev_page_token);
     QNetworkAccessManager *getAccessManager();
 
     QNetworkReply *executeSearch();
+    QNetworkReply *executeSearch(QString pageToken);
     QNetworkReply *executeVideos();
 
     static int max_result;
     static QString youtube_link;
     static void parse_search_json(QList<VideoInfo> *list, QString q);
 
+    static int total_results;
+    static QString next_page_token;
+    static QString prev_page_token;
+
 
 private:
     QString video_id;
     QString query;
-    QString next_page_token;
     QNetworkAccessManager *access_manager;
 
     static QString youtube_api_url;
