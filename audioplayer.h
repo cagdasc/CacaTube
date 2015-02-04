@@ -14,6 +14,8 @@
 #include <QJsonObject>
 #include <QThread>
 #include <QMediaPlayer>
+#include <QProcess>
+
 #include <quvi/quvi.h>
 #include <quvi/llst.h>
 #include <quvi/net.h>
@@ -21,6 +23,7 @@
 #include <vlc-qt/Instance.h>
 #include <vlc-qt/Media.h>
 #include <vlc-qt/MediaPlayer.h>
+#include <vlc-qt/Audio.h>
 #include "vlc/libvlc.h"
 #include "string.h"
 #include "cacatube_const.h"
@@ -41,6 +44,7 @@ public:
     void setRawURL(QString raw_url);
     void setIsPlaying(bool is_playing);
     void setIsPaused(bool is_paused);
+    void setVolume(int volume);
 
     bool isPlaying();
     float getCurrentPosition();
@@ -57,11 +61,15 @@ private:
     VlcInstance *_instance;
     VlcMediaPlayer *_player;
     VlcMedia *_media;
+    VlcAudio *_volume;
+
+    QProcess *link_process;
 
     QMediaPlayer *player;
 
     QString getEmbeddedMediaURL();
     QString getEmbeddedMediaURLWithAPI();
+    QString getEmbeddedMediaURLWithLocal();
 
 signals:
     void is_pplaying();
@@ -73,6 +81,8 @@ public slots:
 
     void started();
     void ended();
+
+
 };
 
 #endif // AUDIOPLAYER_H

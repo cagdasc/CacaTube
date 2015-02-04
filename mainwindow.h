@@ -42,6 +42,14 @@ private slots:
     void on_next_button_clicked();
     void on_prev_button_clicked();
 
+    void on_volume_slider_sliderMoved(int position);
+
+    void on_add_playlist_button_clicked();
+
+    void on_remove_playlist_button_clicked();
+
+    void on_playlist_clicked(const QModelIndex &index);
+
 signals:
     void stop_button_clicked();
     void pause_button_clicked();
@@ -49,8 +57,11 @@ signals:
 private:
     Ui::MainWindow *ui;
     QList<VideoInfo> *list;
+    QList<VideoInfo> *playlist;
     AudioPlayer *audio_player;
     QStringListModel *model;
+    QStringListModel *model_playlist;
+    QStringList *stringlist_playlist;
     VideoInfo video_info;
     QLinkedList<QString> *token_chain;
 

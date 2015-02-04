@@ -31,14 +31,6 @@ void YoutubeProcess::setVideo_Id(QString video_id) {
     this->video_id = video_id;
 }
 
-/*void YoutubeProcess::setNextPageToken(QString next_page_token) {
-    this->next_page_token = next_page_token;
-}
-
-void YoutubeProcess::setPrevPageToken(QString prev_page_token) {
-    this->prev_page_token = prev_page_token;
-}*/
-
 QNetworkReply *YoutubeProcess::executeSearch() {
 
     QUrlQuery query;
@@ -123,7 +115,7 @@ void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
             QJsonObject temp_obj = npcObject["id"].toObject();
             QString videoId = temp_obj["videoId"].toString();
 
-            std::cout <<videoId.toStdString()<< std::endl;
+            //std::cout <<videoId.toStdString()<< std::endl;
 
             temp_obj = npcObject["snippet"].toObject();
             QString title = temp_obj["title"].toString();
@@ -134,7 +126,7 @@ void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
             VideoInfo video_info(youtube_link + videoId, title, thumbnail_url, 0);
             list->push_back(video_info);
 
-            std::cout << title.toStdString() << std::endl;
+            //std::cout << title.toStdString() << std::endl;
 
     }
 }

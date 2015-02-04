@@ -16,7 +16,6 @@
 #include <QString>
 #include <QList>
 #include <QLinkedList>
-
 #include "videoinfo.h"
 #include "cacatube_const.h"
 
@@ -30,8 +29,6 @@ public:
 
     void setQ(QString query);
     void setVideo_Id(QString video_id);
-    //void setNextPageToken(QString next_page_token);
-    //void setPrevPageToken(QString prev_page_token);
     QNetworkAccessManager *getAccessManager();
 
     QNetworkReply *executeSearch();

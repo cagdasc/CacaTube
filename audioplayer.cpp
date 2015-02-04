@@ -10,9 +10,11 @@ AudioPlayer::AudioPlayer(QObject *parent) : QObject(parent)
     _player = new VlcMediaPlayer(_instance);
     connect(_player, SIGNAL(playing()), this, SLOT(started()));
     connect(_player, SIGNAL(end()), this, SLOT(ended()));
+    _volume = new VlcAudio(_player);
 #else
     player = new QMediaPlayer();
     player->play();
+
 
 #endif
 
@@ -94,11 +96,22 @@ QString AudioPlayer::getEmbeddedMediaURLWithAPI() {
     return embedded;
 }
 
+QString AudioPlayer::getEmbeddedMediaURLWithLocal() {
+    QEventLoop loop;
+    link_process = new QProcess();
+    connect(link_process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+    link_process->start("/usr/local/bin/youtube-dl -g " + raw_url);
+    loop.exec();
+
+    return link_process->readAllStandardOutput();
+}
+
 void AudioPlayer::play() {
 
     if (!is_playing) {
         //QString embedded_url = getEmbeddedMediaURL();
         QString embedded_url = getEmbeddedMediaURLWithAPI();
+        //QString embedded_url = getEmbeddedMediaURLWithLocal();
 
 #ifdef VLC
         _media = new VlcMedia(embedded_url, _instance);
@@ -176,6 +189,12 @@ bool AudioPlayer::isPlaying() {
     return is_playing;
 }
 
+void AudioPlayer::setVolume(int volume) {
+#ifdef VLC
+    _volume->setVolume(volume);
+#endif
+}
+
 float AudioPlayer::getCurrentPosition() {
 #ifdef VLC
     return _player->position();
@@ -194,6 +213,7 @@ void AudioPlayer::release() {
     delete _player;
     delete _media;
     delete _instance;
+    delete _volume;
 #else
     delete player;
 #endif
