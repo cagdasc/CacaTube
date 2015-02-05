@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     model_playlist = new QStringListModel();
     stringlist_playlist = new QStringList();
     playlist = new QList<VideoInfo>();
+
 }
 
 MainWindow::~MainWindow()
@@ -217,6 +218,7 @@ void MainWindow::on_play_button_clicked()
 
 void MainWindow::on_stop_button_clicked()
 {
+    ui->loading_status->setText("");
     ui->play_button->setEnabled(true);
     emit stop_button_clicked();
 }
@@ -245,14 +247,34 @@ void MainWindow::update_time_line() {
     ui->time_line->setMaximum(duration);
     cout << "Slider max: " << ui->time_line->maximum() << endl;
 
+    int total_time;
     while (audio_player->isPlaying()) {
         ui->loading_status->setText("Playing...");
-        ui->time_line->setValue(audio_player->getCurrentPosition() * duration);
+        total_time = audio_player->getCurrentPosition() * duration;
+        ui->time_line->setValue(total_time);
+        total_time /= 1000;
+        int sec = total_time % 60;
+        QString sec_t = QString("%1").arg(sec, 2, 10, QChar('0'));
+        total_time /= 60;
+        int min = total_time % 60;
+        QString min_t = QString("%1").arg(min, 2, 10, QChar('0'));
+        total_time /= 60;
+        if (total_time != 0) {
+            int hr = total_time % 60;
+            QString hr_t = QString("%1").arg(hr, 2, 10, QChar('0'));
+            ui->time_line_text->setText(hr_t + ":" + min_t + ":" + sec_t);
+        } else {
+            ui->time_line_text->setText(min_t + ":" + sec_t);
+        }
         QApplication::processEvents();
     }
 
-    //QApplication::sendPostedEvents();
 
+    ui->play_button->setEnabled(true);
+    emit stop_button_clicked();
+
+    ui->time_line_text->setText("");
+    ui->loading_status->setText("");
     ui->play_button->setEnabled(true);
     ui->time_line->setValue(0);
     cout << "Finished" << endl;

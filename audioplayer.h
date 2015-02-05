@@ -16,9 +16,9 @@
 #include <QMediaPlayer>
 #include <QProcess>
 
-#include <quvi/quvi.h>
-#include <quvi/llst.h>
-#include <quvi/net.h>
+//#include <quvi/quvi.h>
+#//include <quvi/llst.h>
+#//include <quvi/net.h>
 #include <vlc-qt/Common.h>
 #include <vlc-qt/Instance.h>
 #include <vlc-qt/Media.h>
@@ -67,7 +67,7 @@ private:
 
     QMediaPlayer *player;
 
-    QString getEmbeddedMediaURL();
+    //QString getEmbeddedMediaURL();
     QString getEmbeddedMediaURLWithAPI();
     QString getEmbeddedMediaURLWithLocal();
 

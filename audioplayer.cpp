@@ -30,7 +30,7 @@ void AudioPlayer::setRawURL(QString raw_url) {
     this->raw_url = raw_url;
 }
 
-QString AudioPlayer::getEmbeddedMediaURL() {
+/*QString AudioPlayer::getEmbeddedMediaURL() {
 
     quvi_media_t m;
     QUVIcode rc;
@@ -56,7 +56,7 @@ QString AudioPlayer::getEmbeddedMediaURL() {
     quvi_close(&q);
 
     return embedded_url;
-}
+}*/
 
 QString AudioPlayer::getEmbeddedMediaURLWithAPI() {
     QEventLoop loop;

@@ -50,6 +50,7 @@ private slots:
 
     void on_playlist_clicked(const QModelIndex &index);
 
+
 signals:
     void stop_button_clicked();
     void pause_button_clicked();
