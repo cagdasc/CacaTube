@@ -2,8 +2,6 @@
 #include "ui_mainwindow.h"
 #include "youtubeprocess.h"
 
-#include <QDir>
-
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -24,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(audio_player, SIGNAL(is_pplaying()), this, SLOT(update_time_line()));
     connect(this, SIGNAL(stop_button_clicked()), audio_player, SLOT(stop()));
     connect(this, SIGNAL(pause_button_clicked()), this, SLOT(update_time_line()));
-
+    connect(audio_player, SIGNAL(is_perror()), this, SLOT(error()));
     connect(audio_player, SIGNAL(is_pstop()), thread, SLOT(quit()));
     connect(this, SIGNAL(destroyed()), thread, SLOT(deleteLater()));
 
@@ -42,8 +40,13 @@ MainWindow::MainWindow(QWidget *parent) :
     model_playlist = new QStringListModel();
     stringlist_playlist = new QStringList();
     playlist = new QList<VideoInfo>();
+    playlist_size = 0;
+    playlist_change = false;
 
-    ui->tool_saveas->setEnabled(false);
+    sure_box = new QMessageBox("Warning!!","You have a playlist. \n Do you want to remove current playlist?",
+                               QMessageBox::Warning, QMessageBox::Yes, QMessageBox::No | QMessageBox::Default, QMessageBox::Cancel | QMessageBox::Escape,
+                               this);
+    connect(sure_box, SIGNAL(finished(int)), this, SLOT(openFileDialog(int)));
 
 }
 
@@ -60,11 +63,12 @@ MainWindow::~MainWindow()
 
     delete model_playlist;
     delete stringlist_playlist;
+    delete sure_box;
 }
 
 void MainWindow::on_search_bar_returnPressed()
 {
-
+    ui->app_status->setText("Searching...");
     pageNumber = 0;
 
     QEventLoop loop;
@@ -78,32 +82,40 @@ void MainWindow::on_search_bar_returnPressed()
     QObject::connect(access, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
     loop.exec();
 
-    QByteArray bytes = reply->readAll();
-    QString string(bytes);
+    QByteArray data_bytes;
+    QString json;
+    if (reply->error() == QNetworkReply::NoError) {
+        data_bytes = reply->readAll();
+        json = QString::fromUtf8(data_bytes);
 
-    delete process;
-    delete access;
+        delete process;
+        delete access;
 
-    list = new QList<VideoInfo>();
+        list = new QList<VideoInfo>();
 
-    //YoutubeProcess::parse_search_json(list, string);
-    Utils::parseSearchJson(list, string);
+        //YoutubeProcess::parse_search_json(list, string);
+        Utils::parseSearchJson(list, json);
 
-    QStringList strlist;
-    for (int i = 0; i < list->size(); ++i) {
-        VideoInfo v = list->at(i);
-        strlist << v.getTitle();
+        QStringList strlist;
+        for (int i = 0; i < list->size(); ++i) {
+            VideoInfo v = list->at(i);
+            strlist << v.getTitle();
+        }
+
+        model->setStringList(strlist);
+        ui->title_list->setModel(model);
+
+        ui->next_button->setEnabled(true);
+
+        end = list->size();
+        token_chain = new QLinkedList<QString>();
+        token_chain->push_back(0);
+        token_chain->push_back(YoutubeProcess::next_page_token);
+
+        ui->app_status->setText("Success");
+    } else {
+        ui->app_status->setText("Network Error!!");
     }
-
-    model->setStringList(strlist);
-    ui->title_list->setModel(model);
-
-    ui->next_button->setEnabled(true);
-
-    end = list->size();
-    token_chain = new QLinkedList<QString>();
-    token_chain->push_back(0);
-    token_chain->push_back(YoutubeProcess::next_page_token);
 
 }
 
@@ -154,8 +166,6 @@ void MainWindow::on_next_button_clicked()
     cout << "Size: " << list->size() << endl;
     token_chain->push_back(YoutubeProcess::next_page_token);
 
-    //model_playlist->removeRows(0, stringlist_playlist->size());
-
 }
 
 void MainWindow::on_prev_button_clicked()
@@ -192,8 +202,6 @@ void MainWindow::on_prev_button_clicked()
     model->setStringList(strlist);
     ui->title_list->setModel(model);
     cout << "Size: " << list->size() << endl;
-
-    //model_playlist->removeRows(0, stringlist_playlist->size());
 }
 
 void MainWindow::on_play_button_clicked()
@@ -218,7 +226,6 @@ void MainWindow::on_play_button_clicked()
 
 void MainWindow::on_stop_button_clicked()
 {
-    ui->loading_status->setText("");
     ui->time_line_text->setText("...:...:...");
     ui->play_button->setEnabled(true);
     emit stop_button_clicked();
@@ -227,11 +234,6 @@ void MainWindow::on_stop_button_clicked()
 void MainWindow::on_pause_button_clicked()
 {
     audio_player->pause();
-
-    //if (audio_player->isPlaying()) {
-    //emit pause_button_clicked();
-    //}
-
 }
 
 void MainWindow::on_title_list_clicked(const QModelIndex &index)
@@ -275,7 +277,7 @@ void MainWindow::update_time_line() {
     emit stop_button_clicked();
 
     ui->time_line_text->setText("...:...:...");
-    ui->loading_status->setText("");
+    ui->loading_status->setText("Stopped");
     ui->play_button->setEnabled(true);
     ui->time_line->setValue(0);
     cout << "Finished" << endl;
@@ -312,7 +314,7 @@ void MainWindow::on_add_playlist_button_clicked()
         model_playlist->setStringList(*stringlist_playlist);
         ui->playlist->setModel(model_playlist);
 
-        ui->tool_saveas->setEnabled(true);
+        playlist_change = true;
 
     }
 }
@@ -325,9 +327,7 @@ void MainWindow::on_remove_playlist_button_clicked()
         model_playlist->setStringList(*stringlist_playlist);
         ui->playlist->setModel(model_playlist);
 
-        if (playlist->size() == 0) {
-            ui->tool_saveas->setEnabled(false);
-        }
+        playlist_change = true;
     }
 }
 
@@ -342,40 +342,81 @@ void MainWindow::on_playlist_clicked(const QModelIndex &index)
 
 void MainWindow::on_tool_open_triggered()
 {
-    QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("CacaTube (*.ct)"));
-    QString *json = new QString();
+    if (playlist->size() > 0) {
 
-    if (Utils::loadPlaylist(file_name, json)) {
-        playlist->clear();
-        Utils::parsePlaylistJson(playlist, *json);
+        sure_box->open();
 
-        QStringList strlist;
-        for (int i = 0; i < playlist->size(); ++i) {
-            VideoInfo v = playlist->at(i);
-            strlist << v.getTitle();
-        }
-        model_playlist->setStringList(strlist);
-        ui->playlist->setModel(model_playlist);
+    } else {
+        openFileDialog(QMessageBox::Yes);
     }
 
-    delete json;
+
+
 }
 
 void MainWindow::on_tool_save_triggered()
 {
-
+    if (playlist->size() > 0 && playlist_change) {
+        if (file_name != 0) {
+            QString json = Utils::createJsonString(*playlist);
+            if (Utils::savePlaylist(json, file_name)) {
+                cout << "Save Saved" << endl;
+            } else {
+                cout << "Save Not Saved" << endl;
+            }
+        }
+    }
 }
 
 void MainWindow::on_tool_saveas_triggered()
 {
-    QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("CacaTube (*.ct)"));
+    if (playlist->size() > 0) {
+        file_name = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("CacaTube (*.ct)"));
 
-    if (file_name != 0 && playlist->size() != 0) {
-        QString json = Utils::createJsonString(*playlist);
-        if (Utils::savePlaylist(json, file_name)) {
-            cout << "Saved" << endl;
-        } else {
-            cout << "Not Saved" << endl;
+        if (file_name != 0 && playlist->size() != 0) {
+            QString json = Utils::createJsonString(*playlist);
+            if (Utils::savePlaylist(json, file_name)) {
+                cout << "Save As Saved" << endl;
+            } else {
+                cout << "Save As Not Saved" << endl;
+            }
         }
     }
+}
+
+void MainWindow::openFileDialog(int result) {
+
+    bool open_playlist = true;
+
+    if (result == QMessageBox::No) {
+        open_playlist = false;
+    } else if (result == QMessageBox::Cancel) {
+        open_playlist = false;
+    }
+
+    if (open_playlist) {
+
+        file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("CacaTube (*.ct)"));
+        QString *json = new QString();
+
+        if (Utils::loadPlaylist(file_name, json)) {
+            playlist->clear();
+            Utils::parsePlaylistJson(playlist, *json);
+
+            for (int i = 0; i < playlist->size(); ++i) {
+                VideoInfo v = playlist->at(i);
+                stringlist_playlist->append(v.getTitle());
+            }
+            model_playlist->setStringList(*stringlist_playlist);
+            ui->playlist->setModel(model_playlist);
+            playlist_size = playlist->size();
+        }
+
+        delete json;
+    }
+
+}
+
+void MainWindow::error() {
+    ui->app_status->setText("Error while playing!!");
 }

@@ -10,6 +10,8 @@
 #include <QEventLoop>
 #include <QMediaPlayer>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QDir>
 
 #include "videoinfo.h"
 #include "audioplayer.h"
@@ -32,9 +34,9 @@ private slots:
 
     void on_play_button_clicked();
     void on_pause_button_clicked();
+    void on_stop_button_clicked();
 
     void on_title_list_clicked(const QModelIndex &index);
-    void on_stop_button_clicked();
 
     void update_time_line();
 
@@ -52,12 +54,17 @@ private slots:
     void on_tool_save_triggered();
     void on_tool_saveas_triggered();
 
+    void openFileDialog(int result);
+
+    void error();
+
 signals:
     void stop_button_clicked();
     void pause_button_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QThread *thread;
     QList<VideoInfo> *list;
     QList<VideoInfo> *playlist;
     AudioPlayer *audio_player;
@@ -66,17 +73,21 @@ private:
     QStringList *stringlist_playlist;
     VideoInfo video_info;
     QLinkedList<QString> *token_chain;
+    QString file_name;
+
+    QMessageBox *sure_box;
 
     int selected_index;
     int prev_index;
     int list_size;
 
+    int playlist_size;
+    bool playlist_change;
+
     int pageNumber;
     int result_sum;
     int start;
     int end;
-
-    QThread *thread;
 
 };
 

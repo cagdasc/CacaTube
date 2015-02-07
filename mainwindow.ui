@@ -7,26 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>742</height>
+    <height>774</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>780</width>
-    <height>696</height>
+    <height>774</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>790</width>
-    <height>742</height>
+    <height>774</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>CacaTube</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset>
     <normaloff>:/res/res/icon.png</normaloff>:/res/res/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -126,7 +126,7 @@
          </property>
          <property name="icon">
           <iconset resource="res.qrc">
-           <normaloff>:/res/res/pause_icon.png</normaloff>:/res/res/pause_icon.png</iconset>
+           <normaloff>:/images/images/pause_icon.png</normaloff>:/images/images/pause_icon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -149,7 +149,7 @@
          </property>
          <property name="icon">
           <iconset resource="res.qrc">
-           <normaloff>:/res/res/play_icon.png</normaloff>:/res/res/play_icon.png</iconset>
+           <normaloff>:/images/images/play_icon.png</normaloff>:/images/images/play_icon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -175,7 +175,7 @@
          </property>
          <property name="icon">
           <iconset resource="res.qrc">
-           <normaloff>:/res/res/stop_icon.png</normaloff>:/res/res/stop_icon.png</iconset>
+           <normaloff>:/images/images/stop_icon.png</normaloff>:/images/images/stop_icon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -274,7 +274,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="res.qrc">:/res/res/volume_icon.png</pixmap>
+          <pixmap resource="res.qrc">:/images/images/volume_icon.png</pixmap>
          </property>
         </widget>
        </item>
@@ -413,7 +413,7 @@
      <rect>
       <x>490</x>
       <y>190</y>
-      <width>261</width>
+      <width>271</width>
       <height>471</height>
      </rect>
     </property>
@@ -476,6 +476,27 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="app_status">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>670</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <italic>true</italic>
+      <strikeout>false</strikeout>
+      <stylestrategy>PreferDefault</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
@@ -502,6 +523,12 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>32</height>
+    </size>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -509,7 +536,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="tool_open"/>
    <addaction name="tool_save"/>
@@ -523,7 +550,7 @@
   <action name="tool_open">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/res/res/open_file_icon.png</normaloff>:/res/res/open_file_icon.png</iconset>
+     <normaloff>:/images/images/open_file_icon.png</normaloff>:/images/images/open_file_icon.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -535,7 +562,7 @@
   <action name="tool_save">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/res/res/save_file.png</normaloff>:/res/res/save_file.png</iconset>
+     <normaloff>:/images/images/save_file_icon.png</normaloff>:/images/images/save_file_icon.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -547,7 +574,7 @@
   <action name="tool_saveas">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/res/res/saveas_file.png</normaloff>:/res/res/saveas_file.png</iconset>
+     <normaloff>:/images/images/saveas_file_icon.png</normaloff>:/images/images/saveas_file_icon.png</iconset>
    </property>
    <property name="text">
     <string>Save As</string>
