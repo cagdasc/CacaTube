@@ -6,7 +6,6 @@
 
 QT       += core gui
 QT       += network
-QT       += multimedia
 QT       += widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -33,6 +32,9 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+RESOURCES += \
+    res.qrc
+
 QMAKE_MAC_SDK = macosx
 
 
@@ -42,6 +44,3 @@ LIBS += -lvlc -lvlc-qt -lvlccore
 
 INCLUDEPATH += /Users/cagdascaglak/Desktop/libsandbox/libvlc/compiled_backup/vlc-qt/build/vlc_install_dir/include
 INCLUDEPATH += /Users/cagdascaglak/Desktop/libsandbox/libvlc/compiled_backup/vlc-3.0.0/build/vlc_install_dir/include
-
-RESOURCES += \
-    res.qrc

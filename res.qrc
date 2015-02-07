@@ -1,12 +1,12 @@
 <RCC>
-    <qresource prefix="/res">
-        <file>res/play_icon.png</file>
-        <file>res/pause_icon.png</file>
-        <file>res/stop_icon.png</file>
-        <file>res/volume_icon.png</file>
-        <file>res/icon.png</file>
-        <file>res/open_file_icon.png</file>
-        <file>res/save_file.png</file>
-        <file>res/saveas_file.png</file>
+    <qresource prefix="/images">
+        <file>images/icon.png</file>
+        <file>images/pause_icon.png</file>
+        <file>images/play_icon.png</file>
+        <file>images/stop_icon.png</file>
+        <file>images/volume_icon.png</file>
+        <file>images/open_file_icon.png</file>
+        <file>images/save_file_icon.png</file>
+        <file>images/saveas_file_icon.png</file>
     </qresource>
 </RCC>

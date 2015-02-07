@@ -2,6 +2,7 @@
 
 ### CacaTube ###
 cacatube_const.h
+
 ### C++ ###
 # Compiled Object files
 *.slo
