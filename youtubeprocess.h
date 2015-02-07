@@ -3,9 +3,6 @@
 
 #include <iostream>
 #include <QObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QEventLoop>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -14,7 +11,6 @@
 #include <QUrlQuery>
 #include <QByteArray>
 #include <QString>
-#include <QList>
 #include <QLinkedList>
 #include "videoinfo.h"
 #include "cacatube_const.h"
@@ -37,7 +33,7 @@ public:
 
     static int max_result;
     static QString youtube_link;
-    static void parse_search_json(QList<VideoInfo> *list, QString q);
+    //static void parse_search_json(QList<VideoInfo> *list, QString q);
 
     static int total_results;
     static QString next_page_token;

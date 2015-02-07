@@ -7,24 +7,29 @@
 QT       += core gui
 QT       += network
 QT       += multimedia
+QT       += widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = CacaTube
 TEMPLATE = app
 
+ICON = icon.png
+
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     youtubeprocess.cpp \
     audioplayer.cpp \
-    videoinfo.cpp
+    videoinfo.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     youtubeprocess.h \
     videoinfo.h \
     audioplayer.h \
-    cacatube_const.h
+    cacatube_const.h \
+    utils.h
 
 FORMS    += mainwindow.ui
 

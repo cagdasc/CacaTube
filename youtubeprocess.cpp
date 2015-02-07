@@ -90,7 +90,7 @@ QNetworkReply *YoutubeProcess::executeVideos() {
     return access_manager->get(request);
 }
 
-void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
+/*void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
 
     QJsonDocument json_string = QJsonDocument::fromJson(json.toUtf8());
 
@@ -129,5 +129,5 @@ void YoutubeProcess::parse_search_json(QList<VideoInfo> *list, QString json) {
             //std::cout << title.toStdString() << std::endl;
 
     }
-}
+}*/
 

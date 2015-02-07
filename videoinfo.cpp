@@ -4,7 +4,7 @@ VideoInfo::VideoInfo() {
 
 }
 
-VideoInfo::VideoInfo(QString videoId, QString title, QString thumbnail_url, long duration_ms) {
+VideoInfo::VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration_ms) {
     this->videoId = videoId;
     this->title = title;
     this->thumbnail_url = thumbnail_url;
@@ -27,6 +27,6 @@ QString VideoInfo::getThumbnailURL() {
     return thumbnail_url;
 }
 
-long VideoInfo::getDurationMs() {
+int VideoInfo::getDurationMs() {
     return duration_ms;
 }

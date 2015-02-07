@@ -4,5 +4,9 @@
         <file>res/pause_icon.png</file>
         <file>res/stop_icon.png</file>
         <file>res/volume_icon.png</file>
+        <file>res/icon.png</file>
+        <file>res/open_file_icon.png</file>
+        <file>res/save_file.png</file>
+        <file>res/saveas_file.png</file>
     </qresource>
 </RCC>

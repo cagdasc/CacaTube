@@ -7,14 +7,13 @@
 #include <iostream>
 #include <QStringList>
 #include <QStringListModel>
-#include <QLinkedList>
 #include <QEventLoop>
 #include <QMediaPlayer>
+#include <QFileDialog>
 
-#include <videoinfo.h>
+#include "videoinfo.h"
 #include "audioplayer.h"
-
-#include <QTimer>
+#include "utils.h"
 
 namespace Ui {
 class MainWindow;
@@ -43,13 +42,15 @@ private slots:
     void on_prev_button_clicked();
 
     void on_volume_slider_sliderMoved(int position);
+    void on_volume_slider_sliderPressed();
 
     void on_add_playlist_button_clicked();
-
     void on_remove_playlist_button_clicked();
-
     void on_playlist_clicked(const QModelIndex &index);
 
+    void on_tool_open_triggered();
+    void on_tool_save_triggered();
+    void on_tool_saveas_triggered();
 
 signals:
     void stop_button_clicked();

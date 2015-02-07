@@ -7,7 +7,7 @@ class VideoInfo
 {
 public:
     VideoInfo();
-    VideoInfo(QString videoId, QString title, QString thumbnail_url, long duration_ms);
+    VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration_ms);
     ~VideoInfo();
 
 
@@ -15,14 +15,14 @@ public:
     QString getVideoId();
     QString getTitle();
     QString getThumbnailURL();
-    long getDurationMs();
+    int getDurationMs();
 
 private:
 
     QString videoId;
     QString title;
     QString thumbnail_url;
-    long duration_ms;
+    int duration_ms;
 
 };
 

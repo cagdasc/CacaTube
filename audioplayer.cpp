@@ -9,7 +9,9 @@ AudioPlayer::AudioPlayer(QObject *parent) : QObject(parent)
     _instance = new VlcInstance(VlcCommon::args(), this);
     _player = new VlcMediaPlayer(_instance);
     connect(_player, SIGNAL(playing()), this, SLOT(started()));
+    connect(_player, SIGNAL(error()), this, SLOT(errorSomething()));
     connect(_player, SIGNAL(end()), this, SLOT(ended()));
+
     _volume = new VlcAudio(_player);
 #else
     player = new QMediaPlayer();
@@ -29,34 +31,6 @@ AudioPlayer::AudioPlayer(QString raw_url) {
 void AudioPlayer::setRawURL(QString raw_url) {
     this->raw_url = raw_url;
 }
-
-/*QString AudioPlayer::getEmbeddedMediaURL() {
-
-    quvi_media_t m;
-    QUVIcode rc;
-    quvi_t q;
-
-    QByteArray array = raw_url.toUtf8();
-
-    std::cout << array.size()<< std::endl;
-    char *URL = array.data();
-    char *newUrl;
-    double dur;
-    rc = quvi_init(&q);
-    quvi_parse(q, URL, &m);
-    quvi_getprop(m, QUVIPROP_MEDIAURL, &newUrl);
-    quvi_getprop(m, QUVIPROP_MEDIADURATION, &dur);
-
-    QString embedded_url(newUrl);
-
-    duration = dur;
-    std::cout << "raw link:" << embedded_url.toStdString() << std::endl;
-
-    quvi_parse_close(&m);
-    quvi_close(&q);
-
-    return embedded_url;
-}*/
 
 QString AudioPlayer::getEmbeddedMediaURLWithAPI() {
     QEventLoop loop;
@@ -109,7 +83,6 @@ QString AudioPlayer::getEmbeddedMediaURLWithLocal() {
 void AudioPlayer::play() {
 
     if (!is_playing) {
-        //QString embedded_url = getEmbeddedMediaURL();
         QString embedded_url = getEmbeddedMediaURLWithAPI();
         //QString embedded_url = getEmbeddedMediaURLWithLocal();
 
@@ -208,12 +181,18 @@ double AudioPlayer::getDuration() {
     return duration;
 }
 
+void AudioPlayer::errorSomething() {
+    std::cout << "Error mu o" << std::endl;
+    stop();
+}
+
 void AudioPlayer::release() {
 #ifdef VLC
     delete _player;
     delete _media;
     delete _instance;
     delete _volume;
+    //delete link_process;
 #else
     delete player;
 #endif

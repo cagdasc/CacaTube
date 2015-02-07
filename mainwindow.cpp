@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <youtubeprocess.h>
+#include "youtubeprocess.h"
+
+#include <QDir>
 
 using namespace std;
 
@@ -40,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     model_playlist = new QStringListModel();
     stringlist_playlist = new QStringList();
     playlist = new QList<VideoInfo>();
+
+    ui->tool_saveas->setEnabled(false);
 
 }
 
@@ -82,7 +86,8 @@ void MainWindow::on_search_bar_returnPressed()
 
     list = new QList<VideoInfo>();
 
-    YoutubeProcess::parse_search_json(list, string);
+    //YoutubeProcess::parse_search_json(list, string);
+    Utils::parseSearchJson(list, string);
 
     QStringList strlist;
     for (int i = 0; i < list->size(); ++i) {
@@ -100,7 +105,6 @@ void MainWindow::on_search_bar_returnPressed()
     token_chain->push_back(0);
     token_chain->push_back(YoutubeProcess::next_page_token);
 
-    //model_playlist->removeRows(0, stringlist_playlist->size());
 }
 
 void MainWindow::on_next_button_clicked()
@@ -127,7 +131,8 @@ void MainWindow::on_next_button_clicked()
     delete process;
     delete access;
 
-    YoutubeProcess::parse_search_json(list, string);
+    //YoutubeProcess::parse_search_json(list, string);
+    Utils::parseSearchJson(list, string);
 
     start = end;
 
@@ -196,11 +201,6 @@ void MainWindow::on_play_button_clicked()
     audio_player->setRawURL(video_info.getVideoId());
     //audio_player->setRawURL("https://www.youtube.com/watch?v=URLRdcnU6Hk");
 
-    if (prev_index != -1 && prev_index != selected_index) {
-        audio_player->setIsPlaying(false);
-        audio_player->setIsPaused(true);
-    }
-
     prev_index = selected_index;
 
     if (thread->isFinished()) {
@@ -219,6 +219,7 @@ void MainWindow::on_play_button_clicked()
 void MainWindow::on_stop_button_clicked()
 {
     ui->loading_status->setText("");
+    ui->time_line_text->setText("...:...:...");
     ui->play_button->setEnabled(true);
     emit stop_button_clicked();
 }
@@ -273,7 +274,7 @@ void MainWindow::update_time_line() {
     ui->play_button->setEnabled(true);
     emit stop_button_clicked();
 
-    ui->time_line_text->setText("");
+    ui->time_line_text->setText("...:...:...");
     ui->loading_status->setText("");
     ui->play_button->setEnabled(true);
     ui->time_line->setValue(0);
@@ -291,6 +292,17 @@ void MainWindow::on_volume_slider_sliderMoved(int position)
 
 }
 
+void MainWindow::on_volume_slider_sliderPressed()
+{
+    if (audio_player->isPlaying()) {
+        int position = ui->volume_slider->value();
+        audio_player->setVolume(position);
+        ui->volume_per->setText("%" + QString::number(position));
+    }
+}
+
+
+
 void MainWindow::on_add_playlist_button_clicked()
 {
     if (selected_index != -1) {
@@ -299,6 +311,8 @@ void MainWindow::on_add_playlist_button_clicked()
         stringlist_playlist->append(v.getTitle());
         model_playlist->setStringList(*stringlist_playlist);
         ui->playlist->setModel(model_playlist);
+
+        ui->tool_saveas->setEnabled(true);
 
     }
 }
@@ -310,6 +324,10 @@ void MainWindow::on_remove_playlist_button_clicked()
         stringlist_playlist->removeAt(selected_index);
         model_playlist->setStringList(*stringlist_playlist);
         ui->playlist->setModel(model_playlist);
+
+        if (playlist->size() == 0) {
+            ui->tool_saveas->setEnabled(false);
+        }
     }
 }
 
@@ -320,4 +338,44 @@ void MainWindow::on_playlist_clicked(const QModelIndex &index)
     cout << "Title: " << video_info.getTitle().toStdString() << endl;
     cout << video_info.getVideoId().toStdString() << endl;
 
+}
+
+void MainWindow::on_tool_open_triggered()
+{
+    QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("CacaTube (*.ct)"));
+    QString *json = new QString();
+
+    if (Utils::loadPlaylist(file_name, json)) {
+        playlist->clear();
+        Utils::parsePlaylistJson(playlist, *json);
+
+        QStringList strlist;
+        for (int i = 0; i < playlist->size(); ++i) {
+            VideoInfo v = playlist->at(i);
+            strlist << v.getTitle();
+        }
+        model_playlist->setStringList(strlist);
+        ui->playlist->setModel(model_playlist);
+    }
+
+    delete json;
+}
+
+void MainWindow::on_tool_save_triggered()
+{
+
+}
+
+void MainWindow::on_tool_saveas_triggered()
+{
+    QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("CacaTube (*.ct)"));
+
+    if (file_name != 0 && playlist->size() != 0) {
+        QString json = Utils::createJsonString(*playlist);
+        if (Utils::savePlaylist(json, file_name)) {
+            cout << "Saved" << endl;
+        } else {
+            cout << "Not Saved" << endl;
+        }
+    }
 }
