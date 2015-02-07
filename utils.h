@@ -22,6 +22,7 @@
 #include <QJsonObject>
 #include <QString>
 #include <QList>
+#include <QMap>
 
 #include "youtubeprocess.h"
 #include <iostream>
@@ -40,6 +41,7 @@ public:
     static QString createJsonString(QList<VideoInfo> playlist);
     static void parseSearchJson(QList<VideoInfo> *playlist, QString json);
     static void parsePlaylistJson(QList<VideoInfo> *playlist, QString json);
+    static QMap<QString, QString> parseAPIReqJson(QString json, int *duration);
 
     static bool savePlaylist(QString json, QString file_name);
     static bool loadPlaylist(QString file_name, QString *json);

@@ -57,20 +57,20 @@ QString AudioPlayer::getEmbeddedMediaURLWithAPI() {
     loop.exec();
 
     QString embedded;
+    QMap<QString, QString> map;
 
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
         QString json(bytes);
 
-        QJsonDocument json_string = QJsonDocument::fromJson(json.toUtf8());
+        map = Utils::parseAPIReqJson(json, &duration);
+        duration *= 1000;
 
-        QJsonObject json_object = json_string.object();
-
-        std::cout << json_object["title"].toString().toStdString() << std::endl;
-        std::cout << json_object["duration"].toInt() << std::endl;
-        duration = json_object["duration"].toInt() * 1000;
-
-        embedded = json_object["url"].toString();
+        embedded = map.value("171");
+        if (embedded.isEmpty() || embedded.isNull()) {
+            embedded = map.value("141");
+            std::cout << "141" << std::endl;
+        }
     }
 
     delete reply;

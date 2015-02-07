@@ -105,6 +105,29 @@ void Utils::parsePlaylistJson(QList<VideoInfo> *playlist, QString json) {
     }
 }
 
+QMap<QString, QString> Utils::parseAPIReqJson(QString json, int *duration) {
+    QMap<QString, QString> format_url_map;
+
+    QJsonDocument json_string = QJsonDocument::fromJson(json.toUtf8());
+    QJsonObject json_object = json_string.object();
+
+    *duration = json_object["duration"].toInt();
+    QJsonArray json_array = json_object["formats"].toArray();
+
+
+    for (int i = 0; i < json_array.size(); ++i) {
+        QJsonObject in_array_obj = json_array[i].toObject();
+
+        QString format_id = in_array_obj["format_id"].toString();
+        QString url = in_array_obj["url"].toString();
+
+        format_url_map.insert(format_id, url);
+
+    }
+
+    return format_url_map;
+}
+
 bool Utils::savePlaylist(QString json, QString file_name) {
     ofstream out_file;
     out_file.open(file_name.toStdString(), ios::out);

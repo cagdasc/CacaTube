@@ -28,8 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
     prev_index = -1;
 
     audio_player = new AudioPlayer();
-
-
     thread = new QThread();
     thread->setObjectName("Play thread");
     audio_player->moveToThread(thread);
@@ -236,6 +234,8 @@ void MainWindow::on_play_button_clicked()
         thread->start();
         ui->play_button->setEnabled(false);
         cout << "thread start" << endl;
+    } else {
+        cout << "Not playing" << endl;
     }
 
 }

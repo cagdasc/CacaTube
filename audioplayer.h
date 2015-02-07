@@ -30,6 +30,7 @@
 #include <QJsonObject>
 #include <QThread>
 #include <QProcess>
+#include <QMap>
 
 #include <vlc-qt/Common.h>
 #include <vlc-qt/Instance.h>
@@ -39,6 +40,7 @@
 #include "vlc/libvlc.h"
 #include "string.h"
 #include "cacatube_const.h"
+#include "utils.h"
 
 class AudioPlayer : public QObject
 {
@@ -65,7 +67,7 @@ public:
 private:
     bool is_playing;
     bool is_paused;
-    double duration;
+    int duration;
 
     QString raw_url;
     VlcInstance *_instance;
