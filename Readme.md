@@ -4,7 +4,7 @@ CacaTube is only audio player. It use Youtube API and stream video with [libvlc]
 
 #License
 
-    Copyright 2014 Cagdas Caglak
+    Copyright 2015 Cagdas Caglak
      
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
