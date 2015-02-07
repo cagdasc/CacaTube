@@ -13,7 +13,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QThread>
-#include <QMediaPlayer>
 #include <QProcess>
 
 #include <vlc-qt/Common.h>
@@ -24,8 +23,6 @@
 #include "vlc/libvlc.h"
 #include "string.h"
 #include "cacatube_const.h"
-
-#define VLC 1
 
 class AudioPlayer : public QObject
 {
@@ -59,10 +56,7 @@ private:
     VlcMediaPlayer *_player;
     VlcMedia *_media;
     VlcAudio *_volume;
-
     QProcess *link_process;
-
-    QMediaPlayer *player;
 
     QString getEmbeddedMediaURLWithAPI();
     QString getEmbeddedMediaURLWithLocal();
@@ -70,6 +64,7 @@ private:
 signals:
     void is_pplaying();
     void is_pstop();
+    void is_perror();
 
 public slots:
     void play();

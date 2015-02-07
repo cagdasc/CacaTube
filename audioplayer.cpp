@@ -5,7 +5,6 @@
 
 AudioPlayer::AudioPlayer(QObject *parent) : QObject(parent)
 {
-#ifdef VLC
     _instance = new VlcInstance(VlcCommon::args(), this);
     _player = new VlcMediaPlayer(_instance);
     connect(_player, SIGNAL(playing()), this, SLOT(started()));
@@ -13,12 +12,6 @@ AudioPlayer::AudioPlayer(QObject *parent) : QObject(parent)
     connect(_player, SIGNAL(end()), this, SLOT(ended()));
 
     _volume = new VlcAudio(_player);
-#else
-    player = new QMediaPlayer();
-    player->play();
-
-
-#endif
 
 }
 
@@ -86,17 +79,8 @@ void AudioPlayer::play() {
         QString embedded_url = getEmbeddedMediaURLWithAPI();
         //QString embedded_url = getEmbeddedMediaURLWithLocal();
 
-#ifdef VLC
         _media = new VlcMedia(embedded_url, _instance);
         _player->open(_media);
-#else
-        player->setMedia(QUrl(embedded_url));
-        player->setVolume(50);
-        player->play();
-        is_playing = true;
-        is_paused = false;
-        emit is_pplaying();
-#endif
     }
 
 }
@@ -120,18 +104,10 @@ void AudioPlayer::ended() {
 void AudioPlayer::pause() {
 
     if (!is_paused) {
-#ifdef VLC
         _player->pause();
-#else
-        player->pause();
-#endif
         is_paused = true;
     } else {
-#ifdef VLC
         _player->resume();
-#else
-        player->play();
-#endif
         is_paused = false;
     }
 
@@ -139,12 +115,7 @@ void AudioPlayer::pause() {
 
 void AudioPlayer::stop() {
     if (is_playing || is_paused) {
-
-#ifdef VLC
         _player->stop();
-#else
-        player->stop();
-#endif
         is_playing = false;
         emit is_pstop();
     }
@@ -163,18 +134,11 @@ bool AudioPlayer::isPlaying() {
 }
 
 void AudioPlayer::setVolume(int volume) {
-#ifdef VLC
     _volume->setVolume(volume);
-#endif
 }
 
 float AudioPlayer::getCurrentPosition() {
-#ifdef VLC
     return _player->position();
-#else
-    return player->position() / duration;
-#endif
-
 }
 
 double AudioPlayer::getDuration() {
@@ -182,20 +146,16 @@ double AudioPlayer::getDuration() {
 }
 
 void AudioPlayer::errorSomething() {
-    std::cout << "Error mu o" << std::endl;
     stop();
+    emit is_perror();
 }
 
 void AudioPlayer::release() {
-#ifdef VLC
     delete _player;
     delete _media;
     delete _instance;
     delete _volume;
     //delete link_process;
-#else
-    delete player;
-#endif
 }
 
 AudioPlayer::~AudioPlayer()
