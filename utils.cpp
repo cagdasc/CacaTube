@@ -48,14 +48,14 @@ void Utils::parseSearchJson(QList<VideoInfo> *list, QString json) {
 
 
     for (int i = 0; i < json_array.size(); ++i) {
-        QJsonObject npcObject = json_array[i].toObject();
+        QJsonObject in_array_obj = json_array[i].toObject();
 
-        QJsonObject temp_obj = npcObject["id"].toObject();
+        QJsonObject temp_obj = in_array_obj["id"].toObject();
         QString videoId = temp_obj["videoId"].toString();
 
         //std::cout <<videoId.toStdString()<< std::endl;
 
-        temp_obj = npcObject["snippet"].toObject();
+        temp_obj = in_array_obj["snippet"].toObject();
         QString title = temp_obj["title"].toString();
 
         temp_obj = temp_obj["thumbnails"].toObject();
@@ -77,11 +77,11 @@ void Utils::parsePlaylistJson(QList<VideoInfo> *playlist, QString json) {
 
 
     for (int i = 0; i < json_array.size(); ++i) {
-        QJsonObject npcObject = json_array[i].toObject();
+        QJsonObject in_array_obj = json_array[i].toObject();
 
-        QString title = npcObject["title"].toString();
-        QString url = npcObject["url"].toString();
-        int duration = npcObject["duration"].toInt();
+        QString title = in_array_obj["title"].toString();
+        QString url = in_array_obj["url"].toString();
+        int duration = in_array_obj["duration"].toInt();
 
         VideoInfo v(url, title, 0, duration);
         playlist->push_back(v);
