@@ -57,20 +57,15 @@ QString AudioPlayer::getEmbeddedMediaURLWithAPI() {
     loop.exec();
 
     QString embedded;
-    QMap<QString, QString> map;
 
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
         QString json(bytes);
 
-        map = Utils::parseAPIReqJson(json, &duration);
-        duration *= 1000;
+        VideoInfo video_info = Utils::parseAPIReqJson(json);
+        duration = video_info.getDuration() * 1000;
 
-        embedded = map.value("171");
-        if (embedded.isEmpty() || embedded.isNull()) {
-            embedded = map.value("141");
-            std::cout << "141" << std::endl;
-        }
+        embedded = video_info.getEmbeddedUrl();
     }
 
     delete reply;

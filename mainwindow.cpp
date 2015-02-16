@@ -107,7 +107,6 @@ void MainWindow::on_search_bar_returnPressed()
 
         list = new QList<VideoInfo>();
 
-        //YoutubeProcess::parse_search_json(list, string);
         Utils::parseSearchJson(list, json);
 
         QStringList strlist;
@@ -157,7 +156,6 @@ void MainWindow::on_next_button_clicked()
     delete process;
     delete access;
 
-    //YoutubeProcess::parse_search_json(list, string);
     Utils::parseSearchJson(list, string);
 
     start = end;
@@ -261,6 +259,7 @@ void MainWindow::on_title_list_clicked(const QModelIndex &index)
 }
 void MainWindow::update_time_line() {
 
+    ui->app_status->setText("");
     double duration = audio_player->getDuration();
     cout << "Duration: " << duration << "ms" << " -- " << duration/1000 << " sec" << endl;
     ui->time_line->setMaximum(duration);

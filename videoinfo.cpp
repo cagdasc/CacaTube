@@ -20,11 +20,11 @@ VideoInfo::VideoInfo() {
 
 }
 
-VideoInfo::VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration_ms) {
+VideoInfo::VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration) {
     this->videoId = videoId;
     this->title = title;
     this->thumbnail_url = thumbnail_url;
-    this->duration_ms = duration_ms;
+    this->duration = duration;
 }
 
 VideoInfo::~VideoInfo() {
@@ -35,6 +35,10 @@ QString VideoInfo::getVideoId() {
     return videoId;
 }
 
+QString VideoInfo::getEmbeddedUrl() {
+    return embedded_url;
+}
+
 QString VideoInfo::getTitle() {
     return title;
 }
@@ -43,6 +47,10 @@ QString VideoInfo::getThumbnailURL() {
     return thumbnail_url;
 }
 
-int VideoInfo::getDurationMs() {
-    return duration_ms;
+int VideoInfo::getDuration() {
+    return duration;
+}
+
+void VideoInfo::setEmbeddedUrl(QString embedded_url) {
+    this->embedded_url = embedded_url;
 }

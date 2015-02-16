@@ -30,7 +30,6 @@
 #include <QJsonObject>
 #include <QThread>
 #include <QProcess>
-#include <QMap>
 
 #include <vlc-qt/Common.h>
 #include <vlc-qt/Instance.h>

@@ -23,22 +23,24 @@ class VideoInfo
 {
 public:
     VideoInfo();
-    VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration_ms);
+    VideoInfo(QString videoId, QString title, QString thumbnail_url, int duration);
     ~VideoInfo();
 
-
-
     QString getVideoId();
+    QString getEmbeddedUrl();
     QString getTitle();
     QString getThumbnailURL();
-    int getDurationMs();
+    int getDuration();
+
+    void setEmbeddedUrl(QString embedded_url);
 
 private:
 
     QString videoId;
+    QString embedded_url;
     QString title;
     QString thumbnail_url;
-    int duration_ms;
+    int duration;
 
 };
 

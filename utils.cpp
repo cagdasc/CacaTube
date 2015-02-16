@@ -34,7 +34,7 @@ QString Utils::createJsonString(QList<VideoInfo> playlist) {
         QJsonObject object;
         object["title"] = v.getTitle();
         object["url"] = v.getVideoId();
-        object["duration"] = v.getDurationMs();
+        object["duration"] = v.getDuration();
         items.append(object);
     }
 
@@ -105,27 +105,21 @@ void Utils::parsePlaylistJson(QList<VideoInfo> *playlist, QString json) {
     }
 }
 
-QMap<QString, QString> Utils::parseAPIReqJson(QString json, int *duration) {
+VideoInfo Utils::parseAPIReqJson(QString json) {
     QMap<QString, QString> format_url_map;
 
     QJsonDocument json_string = QJsonDocument::fromJson(json.toUtf8());
     QJsonObject json_object = json_string.object();
 
-    *duration = json_object["duration"].toInt();
-    QJsonArray json_array = json_object["formats"].toArray();
+    QString title = json_object["title"].toString();
+    QString embedded_url = json_object["url"].toString();
+    QString thumbnail_url = json_object["thumbnail"].toString();
+    int duration = json_object["duration"].toInt();
 
+    VideoInfo video_info(0, title, thumbnail_url, duration);
+    video_info.setEmbeddedUrl(embedded_url);
 
-    for (int i = 0; i < json_array.size(); ++i) {
-        QJsonObject in_array_obj = json_array[i].toObject();
-
-        QString format_id = in_array_obj["format_id"].toString();
-        QString url = in_array_obj["url"].toString();
-
-        format_url_map.insert(format_id, url);
-
-    }
-
-    return format_url_map;
+    return video_info;
 }
 
 bool Utils::savePlaylist(QString json, QString file_name) {
